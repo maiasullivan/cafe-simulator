@@ -1,6 +1,13 @@
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <ctime>
+
+enum States {
+    ST_BeginGame,
+    ST_RunningGame,
+    ST_GameOver
+};
 
 struct temperatureOptions {
     int standard = 0;
@@ -135,6 +142,25 @@ std::string generateIntroduction() {
     return generatedIntro;
 }
 
+bool getUserReturn() {
+    bool returnEntered;
+
+    while (returnEntered == false) {
+        std::string inputLine;
+        std::getline(std::cin, inputLine);
+        std::istringstream ss(inputLine);
+
+        if (inputLine.find('q') != std::string::npos) {
+            returnEntered = false;
+            break;
+        } else if (!(ss.eof())) {
+            returnEntered = true;
+        }
+    }
+
+    return returnEntered;
+}
+
 int main() {
 
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
@@ -143,14 +169,27 @@ int main() {
     std::string customerIntro;
     std::string drinkType;
 
-    customerMilk = generateMilk();
-    customerIntro = generateIntroduction();
-    drinkType = generateDrinkType();
+    States curState = ST_BeginGame;
 
-    std::cout << "Coffee order: " << std::endl << std::endl;
+    if (curState == ST_BeginGame) {
+        while (getUserReturn() == true) {
+            customerMilk = generateMilk();
+            customerIntro = generateIntroduction();
+            drinkType = generateDrinkType();
 
-    std::cout << customerIntro << 
-    customerMilk << " " << drinkType << std::endl << std::endl;
+            std::cout << "Coffee order: " << std::endl << std::endl;
+
+            std::cout << customerIntro << 
+            customerMilk << " " << drinkType << std::endl << std::endl;
+                
+            if (getUserReturn() == false) {
+                curState = ST_GameOver;
+                std::cout << std::endl << "Game Over" << std::endl << std::endl;
+                break;
+            }
+        }
+
+    }
 
     return 0;
 }
