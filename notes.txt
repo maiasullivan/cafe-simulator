@@ -1,0 +1,59 @@
+Compile call: g++ -std=c++11 cafe_simulator.cpp
+
+GREETING:
+Hey how are you/hi hows it going
+What can I get for you today/what would you like today
+what would you like to order/how can i help you today
+     Listen to first order
+     Check size, sugar level
+ask for name
+Repeat back
+take next coffee from order (above)
+read order back to them and enter into system
+ask if they'd like a tray
+enter into till
+ask customer how theyd like to pay after making a judgement call
+let them pay
+place cups on top of machine
+"thank you, wont be long"
+
+
+
+COFFEE ORDER: 
+size? (Struct)
+
+milk type
+milk prescence (Struct)
+temperature (Struct)
+strength (Struct)
+
+sugar level
+caffeine level (DC = decaf) (Struct)
+dash of milk/water
+
+name
+order amount and letter  (seperate to individual drink order class)
+time
+
+number of coffees (Struct) (seperate to individual drink order class)
+carry tray
+
+
+
+things to add?:
+food order (seperate to individual drink order class)
+POS system (seperate to individual drink order class)
+sticky note/keep cup
+
+
+
+ALGORITHM NOTES: 
+coffee type depends on temperature
+coffee type depends on size
+coffee type depends on strength
+coffee type depends on milk prescense (black or white)
+coffee type depends on caffeine level
+
+order amount depends on number of coffees
+order letter depends on game progress (time)
+carry tray depends on number of coffees
