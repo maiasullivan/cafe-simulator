@@ -9,12 +9,40 @@ enum States {
     ST_GameOver
 };
 
-struct temperatureOptions {
-    int standard = 0;
-    int hot = 1;
-    int extraHot = 2;
-    int iced = 3;
+struct adjustmentOptions {
+    std::string temp;
+    std::string strength;
+    std::string size;
+    int sugar;
 };
+
+struct strengthOptions {
+    int standard = 0;
+    int weak = 1;
+    int strong = 2;
+    int extraStrong = 3;
+};
+
+std::string generateTemp (bool stmdMilkPresent/*bool temp?*/) {
+
+
+    if (stmdMilkPresent) {
+        return 0;
+    }
+    // Generate temp if drink type requires it and steamed milk is present
+
+}
+
+int generateStrength (std::string drinkType, bool stmdMilkPresent/*bool temp?*/) {
+    // Generate strength if drink type requires it
+    // Cl, Cap, FW, Magic, LB, Iced latte, HC, Pic
+    // strong espresso == double espresso
+    // 
+
+}
+
+
+
 
 class Drink {
     public: 
@@ -210,6 +238,100 @@ class Milk {
 
 };
 
+
+class Sweetener {
+    public: 
+        Sweetener () {};
+        std::string spokenSweetener = ""; // default
+        std::string shortenedSweetener = "";
+        bool sweetenerPresent = false;
+
+        bool sweetenerPrescence(std::string drinkTypeShort, bool& sweetenerPresent) {
+
+            if (!(drinkTypeShort == "" && drinkTypeShort == "Pic" && drinkTypeShort == "Baby c" && 
+                drinkTypeShort == "S Mac" && drinkTypeShort == "L Mac" && drinkTypeShort == "ESP")) {
+                    sweetenerPresent = true;
+                }
+            else {
+                int sweetenerChance = rand() % 3;
+                if (sweetenerChance == 0) {
+                    sweetenerPresent = true;
+                }
+            }
+            return sweetenerPresent;
+        }
+
+        std::string generateSweetenerType (bool sweetenerPresent, std::string& shortenedSweetener, std::string& spokenSweetener) {
+
+            int rdmSweetenerType = rand() % 4;
+            int rdmWording = rand() % 2;
+            // none, sugar, equal, honey,
+            std::string spokenSweetener;
+
+            if (rdmSweetenerType == 0) {
+                spokenSweetener = "sugar";
+            }
+
+            else if (rdmSweetenerType == 1) {
+                shortenedSweetener = "+honey";
+                spokenSweetener = "honey";
+            }
+
+            else if (rdmSweetenerType == 2) {
+                shortenedSweetener = "+sweetener";
+                spokenSweetener = "sweetener";
+            }
+
+            return shortenedSweetener;
+        }
+
+        std::string sweetenerAmount(std::string sweetenerType, bool sweetenerPresent) {
+            int rdmAmount = rand() % 4;
+            int rdmWording = rand() % 2;
+            std::string spokenWording;
+
+            if (sweetenerType == "+honey") {
+                if (rdmWording == 0) {
+                    spokenWording = " some " + sweetenerType;
+                }
+                else if (rdmWording == 1) {
+                    spokenWording = " a bit of " + sweetenerType;
+                }
+            }
+            else {
+                if (rdmAmount == 0) {
+                    if (rdmWording == 0) {
+                        spokenWording = " a " + sweetenerType;
+                    }
+                    else if (rdmWording == 1) {
+                        spokenWording = " one " + sweetenerType;
+                    }
+                }
+                else if (rdmAmount == 1) {
+                    if (rdmWording == 0) {
+                        spokenWording = " two " + sweetenerType + "s";
+                    }
+                    else if (rdmWording == 1) {
+                        spokenWording = " a couple of " + sweetenerType + "s";
+                    }
+                }
+                else if (rdmAmount == 2) {
+                    spokenWording = " three " + sweetenerType + "s";             
+                }
+                else if (rdmAmount == 3) {
+                    if (rdmWording == 0) {
+                        spokenWording = " half a " + sweetenerType;
+                    }
+                    else if (rdmWording == 1) {
+                        spokenWording = " a half scoop of " + sweetenerType;
+                    }
+                }
+            }
+            return spokenWording;
+        }
+
+};
+
 std::string generateIntroduction() {
     std::string generatedIntro;
     int randomChance = rand() % 5;
@@ -262,6 +384,7 @@ int main() {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     std::string temperature;
     std::string customerMilk = "";
+    std::string customerSweetener = "";
     std::string customerIntro;
     std::string drinkType;
 
@@ -271,6 +394,8 @@ int main() {
         while (curState == ST_BeginGame) {
             Drink drink;
             Milk milk;
+            Sweetener sweetener;
+
             drinkType = drink.generateDrinkType(drink.spokenType, drink.stmdMilkPresent);
             
             if (drink.stmdMilkPresent == true) { // get milk if the drink type requires it
@@ -280,12 +405,22 @@ int main() {
                 customerMilk = "";
             }
 
+        //// CHATGPT!! INSERT YOUR STUFF HERE
+            bool drinkSweetener = sweetener.sweetenerPrescence(drink.shortenedType, sweetener.sweetenerPresent);
+            if (drinkSweetener) {
+                sweetener.generateSweetenerType (sweetener.sweetenerPresent, sweetener.shortenedSweetener, sweetener.spokenSweetener);
+                customerSweetener = sweetener.sweetenerAmount(sweetener.shortenedSweetener, sweetener.sweetenerPresent);
+            }
+
+
+
+
             customerIntro = generateIntroduction();
 
             std::cout << "Coffee order: " << std::endl << std::endl;
 
             std::cout << customerIntro << 
-            customerMilk << drinkType << std::endl << std::endl;
+            customerMilk << drinkType << customerSweetener << std::endl << std::endl;
 
 
             // rewwrite later
