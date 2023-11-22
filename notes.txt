@@ -1,5 +1,10 @@
 Compile call: g++ -std=c++11 cafe_simulator.cpp
 
+TO DO:
+Clear sweeteners and milk for each order (idk how but it reuses previous sweetener even if the randchance is set to 1 or 2 for sweetenerPresence)
+
+
+
 GREETING:
 Hey how are you/hi hows it going
 What can I get for you today/what would you like today
@@ -44,6 +49,7 @@ things to add?:
 food order (seperate to individual drink order class)
 POS system (seperate to individual drink order class)
 sticky note/keep cup
+ask for size
 
 
 
