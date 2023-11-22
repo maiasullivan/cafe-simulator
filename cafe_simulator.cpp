@@ -34,14 +34,12 @@ struct strengthOptions {
     int extraStrong = 3;
 };
 
-bool tempPresence (bool stmdMilkPresent) {
+bool tempPresence () {
     int temperatureNeeded = rand() % 3;
     bool tempPresence;
 
-    if (stmdMilkPresent) {
-        if (temperatureNeeded == 0) {
-            tempPresence = true;
-        }
+    if (temperatureNeeded == 0) {
+        tempPresence = true;
     }
     else {
         tempPresence = false;
@@ -49,18 +47,17 @@ bool tempPresence (bool stmdMilkPresent) {
     return tempPresence;
 }
 
-int generateTemp (bool tempPresence) {
-    AdjustmentOptions adjustmentOptions;
+int generateTemp (std::string& spokenTemp, std::string& shortenedTemp) {
     int temperatureOptions = rand() % 3;
 
     if (temperatureOptions < 2) {
-            adjustmentOptions.spokenTemp = " hot";
-            adjustmentOptions.shortenedTemp = "Hot";
+            spokenTemp = " hot";
+            shortenedTemp = "Hot";
     }
 
     if (temperatureOptions == 2) {
-            adjustmentOptions.spokenTemp = " extra hot";
-            adjustmentOptions.shortenedTemp = "Ex. Hot";
+            spokenTemp = " extra hot";
+            shortenedTemp = "Ex. Hot";
     }
 
 }
@@ -444,8 +441,10 @@ int main() {
     std::string customerMilk = "";
     std::string sweetenerPhrasing = "";
     std::string sweetenerSentence = "";
+    // std::string customerTemperature = "";
     std::string customerIntro;
     std::string drinkType;
+    bool tempPresent = false;
 
     States curState = ST_BeginGame;
 
@@ -460,12 +459,12 @@ int main() {
             
             if (drink.stmdMilkPresent == true) { // get milk if the drink type requires it
                 customerMilk = milk.generateMilk(milk.spokenMilk);
+                tempPresent = tempPresence();
             }
             else { 
                 customerMilk = "";
             }
 
-        //// CHATGPT!! INSERT YOUR STUFF HERE
             bool drinkSweetener = sweetener.sweetenerPrescence(drink.shortenedType, sweetener.sweetenerPresent);
             if (drinkSweetener) {
                 sweetener.generateSweetenerType (sweetener.sweetenerPresent, sweetener.shortenedSweetener, sweetener.spokenSweetener);
@@ -477,7 +476,9 @@ int main() {
                 sweetener.spokenSweetener = "";
             }
 
-
+            if (tempPresent) {
+                generateTemp(adjustmentOptions.spokenTemp, adjustmentOptions.shortenedTemp);
+            }
 
 
             customerIntro = generateIntroduction();
@@ -485,10 +486,21 @@ int main() {
             std::cout << "Coffee order: " << std::endl << std::endl;
 
             std::cout << customerIntro << 
-            customerMilk << drinkType << sweetenerSentence << std::endl << std::endl;
+            adjustmentOptions.spokenTemp << customerMilk << drinkType << sweetenerSentence << std::endl << std::endl;
 
 
-            // rewwrite later
+            std::string userTemp;
+
+            if (!(adjustmentOptions.shortenedTemp == "")) {
+                std::getline(std::cin, userTemp);
+            }
+
+            if (!(adjustmentOptions.shortenedTemp == userTemp)) {
+                curState = ST_GameOver;
+                std::cout << "Wrong! Should be: " << adjustmentOptions.shortenedTemp;
+                std::cout << std::endl;
+            }
+
 
             std::string userMilk;
 
@@ -503,7 +515,6 @@ int main() {
             }
 
 
-
             std::string userDrink;
 
             std::getline(std::cin, userDrink);
@@ -513,6 +524,7 @@ int main() {
                 std::cout << "Wrong! Should be: " << drink.shortenedType;
                 std::cout << std::endl;
             }
+
 
             std::string userSweetener;
 
