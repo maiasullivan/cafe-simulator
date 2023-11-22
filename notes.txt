@@ -1,8 +1,7 @@
 Compile call: g++ -std=c++11 cafe_simulator.cpp
 
 TO DO:
-Clear sweeteners and milk for each order (idk how but it reuses previous sweetener even if the randchance is set to 1 or 2 for sweetenerPresence)
-
+Add name and number of orders
 
 
 GREETING:
