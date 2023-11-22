@@ -47,7 +47,7 @@ bool tempPresence () {
     return tempPresence;
 }
 
-int generateTemp (std::string& spokenTemp, std::string& shortenedTemp) {
+void generateTemp (std::string& spokenTemp, std::string& shortenedTemp) {
     int temperatureOptions = rand() % 3;
 
     if (temperatureOptions < 2) {
@@ -62,13 +62,29 @@ int generateTemp (std::string& spokenTemp, std::string& shortenedTemp) {
 
 }
 
+bool strengthPresence (std::string drinkType) {
+    bool strPresence = false;
+    if (drinkType == "Cl" || "Cap" || "FW" || "LB" || "Iced latte" || "HC" || "Pic") {
+        int temperatureNeeded = rand() % 3;
+        if (temperatureNeeded == 0) {
+            strPresence = true;
+        }
+    }
+    return strPresence;
+}
 
-int generateStrength (std::string drinkType, bool stmdMilkPresent/*bool temp?*/) {
-    // Generate strength if drink type requires it
-    // Cl, Cap, FW, Magic, LB, Iced latte, HC, Pic
-    // strong espresso == double espresso
-    // 
+void generateStrength (std::string& spokenStrength, std::string& shortenedStrength) {
+    int strengthOptions = rand() % 3;
 
+    if (strengthOptions < 2) {
+            spokenStrength = " strong";
+            shortenedStrength = "Str";
+    }
+
+    if (strengthOptions == 2) {
+            spokenStrength = " weak";
+            shortenedStrength = "Wk";
+    }
 }
 
 
@@ -437,19 +453,25 @@ bool getUserReturn() {
 int main() {
 
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
-    std::string temperature;
-    std::string customerMilk = "";
-    std::string sweetenerPhrasing = "";
-    std::string sweetenerSentence = "";
-    // std::string customerTemperature = "";
     std::string customerIntro;
     std::string drinkType;
-    bool tempPresent = false;
 
     States curState = ST_BeginGame;
 
+    std::cout << std::endl << std::endl << std::endl << std::endl 
+    << "Hi! Welcome to Cafe Simulator" << std::endl << std::endl 
+    << "Read the customers order and enter the shortened version line by line to the terminal"
+    << std::endl << std::endl << "Remember to add the time at the bottom of each order. Enter 'q' to quit at any time." << std::endl << 
+    std::endl << std::endl << std::endl << std::endl << "Good luck!!" << std::endl << std::endl << std::endl << std::endl;
+
     if (curState == ST_BeginGame && getUserReturn() == true) {
         while (curState == ST_BeginGame) {
+            time_t now = time(0);
+            tm* ltm = localtime(&now);  
+            bool tempPresent = false;
+            std::string customerMilk = "";
+            std::string sweetenerPhrasing = "";
+            std::string sweetenerSentence = "";
             Drink drink;
             Milk milk;
             Sweetener sweetener;
@@ -476,6 +498,12 @@ int main() {
                 sweetener.spokenSweetener = "";
             }
 
+            bool needsStrength = strengthPresence(drink.shortenedType);
+
+            if (needsStrength) {
+                generateStrength(adjustmentOptions.spokenStrength, adjustmentOptions.shortenedStrength);
+            }
+
             if (tempPresent) {
                 generateTemp(adjustmentOptions.spokenTemp, adjustmentOptions.shortenedTemp);
             }
@@ -483,10 +511,24 @@ int main() {
 
             customerIntro = generateIntroduction();
 
+            std::string time = std::to_string((ltm->tm_hour) % 12) + ":" + std::to_string(ltm->tm_min);
             std::cout << "Coffee order: " << std::endl << std::endl;
 
             std::cout << customerIntro << 
-            adjustmentOptions.spokenTemp << customerMilk << drinkType << sweetenerSentence << std::endl << std::endl;
+            adjustmentOptions.spokenTemp << adjustmentOptions.spokenStrength << customerMilk << drinkType << sweetenerSentence << std::endl << std::endl;
+
+
+            std::string userStr;
+
+            if (!(adjustmentOptions.shortenedStrength == "")) {
+                std::getline(std::cin, userStr);
+            }
+
+            if (!(adjustmentOptions.shortenedStrength == userStr)) {
+                curState = ST_GameOver;
+                std::cout << "Wrong! Should be: " << adjustmentOptions.shortenedStrength;
+                std::cout << std::endl;
+            }
 
 
             std::string userTemp;
@@ -537,8 +579,17 @@ int main() {
                 std::cout << "Wrong! Should be: " << sweetener.shortenedSweetener;
                 std::cout << std::endl;
             }
+
+            std::string userTime;
+            std::getline(std::cin, userTime);
+
+            if (!(time == userTime)) {
+                curState = ST_GameOver;
+                std::cout << "Wrong! Should be: " << time;
+                std::cout << std::endl;
+            }
             
-            std::cout << std::endl << std::endl;
+            std::cout << std::endl << std::endl << std::endl << std::endl;
             adjustmentOptions.reset();
         }
     }
