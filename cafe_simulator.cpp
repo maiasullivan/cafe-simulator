@@ -458,11 +458,11 @@ int main() {
 
     States curState = ST_BeginGame;
 
-    std::cout << std::endl << std::endl << std::endl << std::endl 
+    std::cout << std::endl << std::endl
     << "Hi! Welcome to Cafe Simulator" << std::endl << std::endl 
     << "Read the customers order and enter the shortened version line by line to the terminal"
     << std::endl << std::endl << "Remember to add the time at the bottom of each order. Enter 'q' to quit at any time." << std::endl << 
-    std::endl << std::endl << std::endl << std::endl << "Good luck!!" << std::endl << std::endl << std::endl << std::endl;
+    std::endl << "Good luck!!" << std::endl << std::endl;
 
     if (curState == ST_BeginGame && getUserReturn() == true) {
         while (curState == ST_BeginGame) {
@@ -512,7 +512,7 @@ int main() {
             customerIntro = generateIntroduction();
 
             std::string time = std::to_string((ltm->tm_hour) % 12) + ":" + std::to_string(ltm->tm_min);
-            std::cout << "Coffee order: " << std::endl << std::endl;
+            std::cout << "\e[1mCoffee order: \e[0m" << std::endl << std::endl;
 
             std::cout << customerIntro << 
             adjustmentOptions.spokenTemp << adjustmentOptions.spokenStrength << customerMilk << drinkType << sweetenerSentence << std::endl << std::endl;
