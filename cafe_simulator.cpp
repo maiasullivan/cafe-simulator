@@ -408,7 +408,7 @@ std::string generateIntroduction() {
     int randomChance = rand() % 5;
 
     if (randomChance == 0) {
-        generatedIntro = "Hi can I please have a";
+        generatedIntro = "Hi, can I please have a";
     }
 
     else if (randomChance == 1) {
